@@ -4,30 +4,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import com.spudpickles.itunessearch.R
-import com.spudpickles.itunessearch.databinding.FragmentSearchBinding
+import com.spudpickles.itunessearch.databinding.FragmentResultsBinding
 import com.spudpickles.itunessearch.di.ViewModelFactory
 import dagger.android.support.AndroidSupportInjection
-import timber.log.Timber
 import javax.inject.Inject
 
-class SearchFragment : Fragment() {
+class ResultsFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)
-            .get(SearchViewModel::class.java)
+            .get(ResultsViewModel::class.java)
     }
 
-    private lateinit var binding: FragmentSearchBinding
+    private lateinit var binding: FragmentResultsBinding
+    private lateinit var resultsAdapter: ResultsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +38,7 @@ class SearchFragment : Fragment() {
     ): View? {
         binding = DataBindingUtil.inflate(
             inflater,
-            R.layout.fragment_search, container, false
+            R.layout.fragment_results, container, false
         )
         binding.lifecycleOwner = viewLifecycleOwner
         binding.fragment = this
@@ -56,22 +54,13 @@ class SearchFragment : Fragment() {
     }
 
     fun observe() {
-        viewModel.searchRepository.searchResults.observe(viewLifecycleOwner, Observer { items ->
-            items.forEach {
-                Timber.d("item: ${it.trackName}")
-            }
+        viewModel.searchRepository.searchResults.observe(viewLifecycleOwner, Observer { results ->
+            if (results.isNotEmpty()) {
+                resultsAdapter = ResultsAdapter(requireContext(), results)
+                binding.resultsRecycler.swapAdapter(resultsAdapter, true)
 
-            if (items.isNotEmpty()) {
-                val action = SearchFragmentDirections.actionNavSearchToResultsFragment()
-                binding.searchTerm.setText("", TextView.BufferType.EDITABLE)
-                findNavController().navigate(action)
+                viewModel.clearResults()
             }
         })
-    }
-
-    fun clicked(view: View) {
-        if (binding.searchTerm.text.isNotBlank()) {
-            viewModel.fetchSearchResults(binding.searchTerm.text.toString())
-        }
     }
 }

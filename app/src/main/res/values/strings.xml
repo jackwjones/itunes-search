@@ -2,4 +2,7 @@
     <string name="app_name">iTunes Search</string>
 
     <string name="search_title">Search iTunes</string>
+    <string name="search_hint">Search Term</string>
+    <string name="search_go">Perform Search</string>
+    <string name="results_title">Results</string>
 </resources>

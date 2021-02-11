@@ -20,6 +20,12 @@ class SearchRepository @Inject constructor(
     private val _searchResults = MutableLiveData<List<ITunesItem>>()
     val searchResults: LiveData<List<ITunesItem>> = _searchResults
 
+    suspend fun clearResults() {
+        withContext(Dispatchers.IO) {
+            _searchResults.postValue(emptyList())
+        }
+    }
+
     suspend fun searchItunes(searchTerm: String): Int {
         return withContext(Dispatchers.IO) {
             val response = iTunesApiService.execute { api ->

@@ -9,5 +9,14 @@
         android:id="@+id/nav_search"
         android:name="com.spudpickles.itunessearch.ui.SearchFragment"
         android:label="@string/search_title"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_nav_search_to_resultsFragment"
+            app:destination="@id/nav_results" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_results"
+        android:name="com.spudpickles.itunessearch.ui.ResultsFragment"
+        android:label="@string/results_title"
+        tools:layout="@layout/fragment_results" />
 </navigation>
