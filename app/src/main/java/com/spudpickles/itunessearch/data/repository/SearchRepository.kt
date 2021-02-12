@@ -4,9 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.spudpickles.itunessearch.data.entities.ITunesItem
 import com.spudpickles.itunessearch.network.NetworkExecutor
-import com.spudpickles.itunessearch.network.Resource
 import com.spudpickles.itunessearch.network.api.ITunesApiService
-import com.spudpickles.itunessearch.network.model.SearchResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -20,9 +18,18 @@ class SearchRepository @Inject constructor(
     private val _searchResults = MutableLiveData<List<ITunesItem>>()
     val searchResults: LiveData<List<ITunesItem>> = _searchResults
 
+    private val _error = MutableLiveData<Boolean>(false)
+    val error: LiveData<Boolean> = _error
+
     suspend fun clearResults() {
         withContext(Dispatchers.IO) {
             _searchResults.postValue(emptyList())
+        }
+    }
+
+    suspend fun clearError() {
+        withContext(Dispatchers.IO) {
+            _error.postValue(false)
         }
     }
 
@@ -35,21 +42,24 @@ class SearchRepository @Inject constructor(
             if (response.isSuccess()) {
                 val items = ArrayList<ITunesItem>()
                 for (item in response.content?.results ?: emptyList()) {
-                    items.add(
-                        ITunesItem(
-                            artistName = item.artistName ?: "",
-                            trackName = item.trackName ?: "",
-                            trackPrice = item.trackPrice ?: -1,
-                            releaseDateString = item.releaseDate ?: "",
-                            primaryGenreName = item.primaryGenreName ?: ""
+                    if (!item.artistName.isNullOrBlank() && !item.trackName.isNullOrBlank()) {
+                        items.add(
+                            ITunesItem(
+                                artistName = item.artistName,
+                                trackName = item.trackName,
+                                trackPrice = item.trackPrice ?: -1,
+                                releaseDateString = item.releaseDate ?: "",
+                                primaryGenreName = item.primaryGenreName ?: ""
+                            )
                         )
-                    )
+                    }
                 }
                 _searchResults.postValue(items)
                 items.count()
             } else {
                 Timber.d("error getting search result")
                 _searchResults.postValue(emptyList())
+                _error.postValue(true)
                 0
             }
         }

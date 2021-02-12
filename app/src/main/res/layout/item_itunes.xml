@@ -31,24 +31,65 @@
                 android:layout_marginTop="@dimen/margin_normal"
                 android:layout_marginEnd="@dimen/margin_normal"
                 android:text="@{ item.artistName }"
-                android:textSize="@dimen/text_size_normal"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="ITEM ARTIST" />
-
-            <TextView
-                android:id="@+id/item_track_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_normal"
-                android:text="@{ item.trackName }"
                 android:textSize="@dimen/text_size_small"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="ARTIST" />
+
+            <TextView
+                android:id="@+id/item_track_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_normal"
+                android:text="@{ item.trackName }"
+                android:textSize="@dimen/text_size_large"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@id/item_track_price"
+                app:layout_constraintHorizontal_weight="4"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/item_artist"
-                tools:text="REVIEW CONTENT" />
+                tools:text="NAME" />
+
+            <TextView
+                android:id="@+id/item_track_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_normal"
+                android:text="@{ item.formattedPrice }"
+                android:textAlignment="textEnd"
+                android:textSize="@dimen/text_size_normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@id/item_track_name"
+                app:layout_constraintTop_toBottomOf="@id/item_artist"
+                tools:text="PRICE" />
+
+            <TextView
+                android:id="@+id/item_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_normal"
+                android:text="@{ item.formattedDate }"
+                android:textSize="@dimen/text_size_normal"
+                app:layout_constraintEnd_toStartOf="@id/item_genre"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/item_track_name"
+                tools:text="DATE" />
+
+            <TextView
+                android:id="@+id/item_genre"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_normal"
+                android:text="@{ item.primaryGenreName }"
+                android:textAlignment="textEnd"
+                android:textSize="@dimen/text_size_normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/item_date"
+                app:layout_constraintTop_toBottomOf="@id/item_track_name"
+                tools:text="GENRE" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </layout>
